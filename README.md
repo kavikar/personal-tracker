@@ -3,7 +3,7 @@
 [![CI](https://github.com/kavikar/personal-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/kavikar/personal-tracker/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-**Live demo:** _coming soon (Vercel)_ · [Design Doc](docs/DESIGN.md)
+**[Live demo](https://personal-tracker-weld.vercel.app)** · [Design Doc](docs/DESIGN.md)
 
 A calendar-centric tracker for running several concurrent goals on one date grid: job applications, technical interview prep, immigration and admin tasks, and daily habits. Local-first, no account, runs in the browser.
 
