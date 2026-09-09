@@ -1,4 +1,3 @@
-import 'fake-indexeddb/auto';
 import { beforeEach, describe, expect, it } from 'vitest';
 import { TrackerDatabase } from './database';
 import { createRepository, NotFoundError, type Repository } from './repository';

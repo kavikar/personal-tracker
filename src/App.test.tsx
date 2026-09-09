@@ -15,7 +15,7 @@ describe('application shell', () => {
     expect(nav).toHaveTextContent('Calendar');
     expect(nav).toHaveTextContent('Dashboard');
     expect(nav).toHaveTextContent('Search');
-    expect(screen.getByRole('heading', { level: 1, name: 'Calendar' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Calendar' })).toBeInTheDocument();
   });
 
   it('routes to the dashboard and search pages', () => {
