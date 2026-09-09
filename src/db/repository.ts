@@ -1,0 +1,116 @@
+import type { TrackerDatabase } from './database';
+import { db as defaultDb } from './database';
+import type { DateKey, DateRange, Entry, Habit, NewEntry, NewHabit } from './types';
+import type { CategoryKey } from '../categories/keys';
+
+/**
+ * The persistence seam. UI code and rollups talk to this interface, never to
+ * Dexie directly, so a remote backend can replace the implementation without
+ * touching features.
+ */
+export interface Repository {
+  addEntry<T>(input: NewEntry<T>): Promise<Entry<T>>;
+  updateEntry<T>(id: string, patch: Partial<Pick<Entry<T>, 'date' | 'data'>>): Promise<Entry<T>>;
+  deleteEntry(id: string): Promise<void>;
+  getEntry<T = unknown>(id: string): Promise<Entry<T> | undefined>;
+  getEntriesByDate(date: DateKey): Promise<Entry[]>;
+  getEntriesInRange(range: DateRange, category?: CategoryKey): Promise<Entry[]>;
+  listEntries(): Promise<Entry[]>;
+
+  addHabit(input: NewHabit): Promise<Habit>;
+  updateHabit(id: string, patch: Partial<Omit<Habit, 'id' | 'createdAt'>>): Promise<Habit>;
+  listHabits(includeArchived?: boolean): Promise<Habit[]>;
+
+  clearAll(): Promise<void>;
+}
+
+export class NotFoundError extends Error {
+  constructor(entity: string, id: string) {
+    super(`${entity} ${id} not found`);
+    this.name = 'NotFoundError';
+  }
+}
+
+const now = () => new Date().toISOString();
+const newId = () => crypto.randomUUID();
+
+function byDateThenCreated(a: Entry, b: Entry): number {
+  return a.date.localeCompare(b.date) || a.createdAt.localeCompare(b.createdAt);
+}
+
+export function createRepository(db: TrackerDatabase): Repository {
+  return {
+    async addEntry<T>(input: NewEntry<T>): Promise<Entry<T>> {
+      const timestamp = now();
+      const entry: Entry<T> = { id: newId(), ...input, createdAt: timestamp, updatedAt: timestamp };
+      await db.entries.add(entry);
+      return entry;
+    },
+
+    async updateEntry<T>(id: string, patch: Partial<Pick<Entry<T>, 'date' | 'data'>>) {
+      const existing = (await db.entries.get(id)) as Entry<T> | undefined;
+      if (!existing) throw new NotFoundError('Entry', id);
+      const updated: Entry<T> = { ...existing, ...patch, updatedAt: now() };
+      await db.entries.put(updated);
+      return updated;
+    },
+
+    async deleteEntry(id) {
+      await db.entries.delete(id);
+    },
+
+    async getEntry<T>(id: string) {
+      return (await db.entries.get(id)) as Entry<T> | undefined;
+    },
+
+    async getEntriesByDate(date) {
+      const rows = await db.entries.where('date').equals(date).toArray();
+      return rows.sort(byDateThenCreated);
+    },
+
+    async getEntriesInRange({ from, to }, category) {
+      const rows = category
+        ? await db.entries
+            .where('[category+date]')
+            .between([category, from], [category, to], true, true)
+            .toArray()
+        : await db.entries.where('date').between(from, to, true, true).toArray();
+      return rows.sort(byDateThenCreated);
+    },
+
+    async listEntries() {
+      const rows = await db.entries.toArray();
+      return rows.sort(byDateThenCreated);
+    },
+
+    async addHabit(input) {
+      const habit: Habit = { id: newId(), archived: false, createdAt: now(), ...input };
+      await db.habits.add(habit);
+      return habit;
+    },
+
+    async updateHabit(id, patch) {
+      const existing = await db.habits.get(id);
+      if (!existing) throw new NotFoundError('Habit', id);
+      const updated: Habit = { ...existing, ...patch };
+      await db.habits.put(updated);
+      return updated;
+    },
+
+    async listHabits(includeArchived = false) {
+      const rows = await db.habits.toArray();
+      return rows
+        .filter((h) => includeArchived || !h.archived)
+        .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+    },
+
+    async clearAll() {
+      await db.transaction('rw', db.entries, db.habits, async () => {
+        await db.entries.clear();
+        await db.habits.clear();
+      });
+    },
+  };
+}
+
+export const repository = createRepository(defaultDb);
