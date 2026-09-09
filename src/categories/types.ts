@@ -58,6 +58,13 @@ export interface CategoryDefinition<T> {
   summarize: (entries: Entry<T>[], ctx: SummaryContext) => SummaryStat[];
   /** Quick-entry and edit form. */
   Form: ComponentType<FormProps<T>>;
+  /**
+   * The day an entry needs attention (a follow-up, a deadline). Categories
+   * without deadlines leave this undefined.
+   */
+  dueDate?: (data: T) => DateKey | undefined;
+  /** Whether a due item has been dealt with. Defaults to false when omitted. */
+  isDone?: (data: T) => boolean;
 }
 
 /**

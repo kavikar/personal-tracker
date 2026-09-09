@@ -1,3 +1,4 @@
+import { jobSearchCategory } from './jobSearch';
 import type { CategoryKey } from './keys';
 import type { AnyCategoryDefinition, CategoryDefinition } from './types';
 
@@ -5,7 +6,7 @@ import type { AnyCategoryDefinition, CategoryDefinition } from './types';
  * Every registered category, in display order. Add a new category by
  * implementing `CategoryDefinition` in its own folder and appending it here.
  */
-export const categories: readonly AnyCategoryDefinition[] = [];
+export const categories: readonly AnyCategoryDefinition[] = [jobSearchCategory];
 
 const byKey = new Map<CategoryKey, AnyCategoryDefinition>(categories.map((c) => [c.key, c]));
 
