@@ -1,7 +1,8 @@
 import { useCategoryContext } from '../../categories/useCategoryContext';
-import { useEntriesInRange } from '../../db/hooks';
+import { useEntriesByDate, useEntriesInRange } from '../../db/hooks';
 import { addMonths, addWeeks, monthGrid, todayKey, weekRange } from '../../lib/dates';
 import { CalendarHeader } from './CalendarHeader';
+import { DayPanel } from './DayPanel';
 import { MonthView } from './MonthView';
 import { useCalendarState } from './useCalendarState';
 import { WeekView } from './WeekView';
@@ -18,6 +19,7 @@ export function CalendarPage() {
         })()
       : weekRange(calendar.focus);
   const entries = useEntriesInRange(range) ?? [];
+  const selectedEntries = useEntriesByDate(calendar.selected ?? '') ?? [];
 
   const step = (direction: 1 | -1) =>
     calendar.setFocus(
@@ -36,22 +38,36 @@ export function CalendarPage() {
         onNext={() => step(1)}
         onToday={() => calendar.setFocus(todayKey())}
       />
-      {calendar.view === 'month' ? (
-        <MonthView
-          focus={calendar.focus}
-          entries={entries}
-          selected={calendar.selected}
-          onSelect={calendar.select}
-        />
-      ) : (
-        <WeekView
-          focus={calendar.focus}
-          entries={entries}
-          selected={calendar.selected}
-          onSelect={calendar.select}
-          context={context}
-        />
-      )}
+      <div
+        className={`grid gap-4 ${calendar.selected ? 'lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]' : ''}`}
+      >
+        <div>
+          {calendar.view === 'month' ? (
+            <MonthView
+              focus={calendar.focus}
+              entries={entries}
+              selected={calendar.selected}
+              onSelect={calendar.select}
+            />
+          ) : (
+            <WeekView
+              focus={calendar.focus}
+              entries={entries}
+              selected={calendar.selected}
+              onSelect={calendar.select}
+              context={context}
+            />
+          )}
+        </div>
+        {calendar.selected && (
+          <DayPanel
+            date={calendar.selected}
+            entries={selectedEntries}
+            context={context}
+            onClose={() => calendar.select(null)}
+          />
+        )}
+      </div>
     </section>
   );
 }
