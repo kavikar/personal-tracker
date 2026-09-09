@@ -1,5 +1,6 @@
 import { adminCategory } from './admin';
 import { dsaCategory } from './dsa';
+import { habitCategory } from './habit';
 import { jobSearchCategory } from './jobSearch';
 import type { CategoryKey } from './keys';
 import type { AnyCategoryDefinition, CategoryDefinition } from './types';
@@ -12,6 +13,7 @@ export const categories: readonly AnyCategoryDefinition[] = [
   jobSearchCategory,
   dsaCategory,
   adminCategory,
+  habitCategory,
 ];
 
 const byKey = new Map<CategoryKey, AnyCategoryDefinition>(categories.map((c) => [c.key, c]));

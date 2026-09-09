@@ -7,6 +7,7 @@ import type { DateKey, Entry } from '../../db/types';
 import { formatLong } from '../../lib/dates';
 import { EntryEditor } from '../entries/EntryEditor';
 import { EntryRow } from '../entries/EntryRow';
+import { HabitCheckIn } from './HabitCheckIn';
 
 interface DayPanelProps {
   date: DateKey;
@@ -22,6 +23,8 @@ interface EditorState {
 
 export function DayPanel({ date, entries, context, onClose }: DayPanelProps) {
   const [editor, setEditor] = useState<EditorState | null>(null);
+
+  const listed = entries.filter((entry) => entry.category !== 'habit');
 
   const openEdit = (entry: Entry) => {
     const definition = getCategory(entry.category);
@@ -54,11 +57,15 @@ export function DayPanel({ date, entries, context, onClose }: DayPanelProps) {
         ))}
       </div>
 
-      {entries.length === 0 ? (
+      <div className="mt-4">
+        <HabitCheckIn date={date} habits={context.habits} entries={entries} />
+      </div>
+
+      {listed.length === 0 ? (
         <p className="mt-4 text-sm text-slate-500">Nothing logged yet.</p>
       ) : (
         <ul className="mt-4 space-y-2">
-          {entries.map((entry) => (
+          {listed.map((entry) => (
             <EntryRow key={entry.id} entry={entry} context={context} onEdit={openEdit} />
           ))}
         </ul>
