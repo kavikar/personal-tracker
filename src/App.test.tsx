@@ -22,6 +22,6 @@ describe('application shell', () => {
     renderAt('/dashboard');
     expect(screen.getByRole('region', { name: 'Dashboard' })).toBeInTheDocument();
     renderAt('/search');
-    expect(screen.getByRole('heading', { level: 1, name: 'Search' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Search' })).toBeInTheDocument();
   });
 });
