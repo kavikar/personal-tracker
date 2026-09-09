@@ -27,8 +27,16 @@ export async function saveEntry<T>(
 ): Promise<Entry<T>> {
   const parsed = parseEntryData(def, data);
   if (!parsed.ok) throw new ValidationError(parsed.errors);
-  if (existingId) {
-    return repository.updateEntry<T>(existingId, { date, data: parsed.data });
-  }
-  return repository.addEntry<T>({ date, category: def.key, data: parsed.data });
+
+  const previous = existingId ? await repository.getEntry<T>(existingId) : undefined;
+  if (existingId && !previous) throw new Error(`Entry ${existingId} no longer exists`);
+
+  const saved = previous
+    ? await repository.updateEntry<T>(existingId!, { date, data: parsed.data })
+    : await repository.addEntry<T>({ date, category: def.key, data: parsed.data });
+
+  const next = def.followUp?.(previous?.data, parsed.data, date);
+  if (next) await repository.addEntry<T>(next);
+
+  return saved;
 }

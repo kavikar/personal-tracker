@@ -1,6 +1,6 @@
 import type { ComponentType } from 'react';
 import type { ZodType } from 'zod';
-import type { DateKey, DateRange, Entry, Habit } from '../db/types';
+import type { DateKey, DateRange, Entry, Habit, NewEntry } from '../db/types';
 import type { CategoryKey } from './keys';
 
 /** Props every category quick-entry form receives. The same form handles add and edit. */
@@ -65,6 +65,11 @@ export interface CategoryDefinition<T> {
   dueDate?: (data: T) => DateKey | undefined;
   /** Whether a due item has been dealt with. Defaults to false when omitted. */
   isDone?: (data: T) => boolean;
+  /**
+   * Called after an entry is saved. Return a new entry to create alongside it,
+   * for example the next occurrence of a recurring task once it is completed.
+   */
+  followUp?: (previous: T | undefined, saved: T, date: DateKey) => NewEntry<T> | undefined;
 }
 
 /**

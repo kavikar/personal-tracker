@@ -31,6 +31,24 @@ describe('saveEntry', () => {
     await expect(repo.listEntries()).resolves.toHaveLength(1);
   });
 
+  it('creates a follow-up entry when the category asks for one', async () => {
+    const recurring = {
+      ...def,
+      followUp: (previous, saved, date) =>
+        previous && !previous.title.startsWith('done') && saved.title.startsWith('done')
+          ? { date: `${date.slice(0, 8)}20`, category: 'dsa', data: { title: 'next' } }
+          : undefined,
+    } as CategoryDefinition<{ title: string }>;
+    const entry = await saveEntry(recurring, '2026-09-09', { title: 'todo' }, undefined, repo);
+    await expect(repo.listEntries()).resolves.toHaveLength(1);
+    await saveEntry(recurring, '2026-09-09', { title: 'done' }, entry.id, repo);
+    const all = await repo.listEntries();
+    expect(all.map((e) => [e.date, (e.data as { title: string }).title])).toEqual([
+      ['2026-09-09', 'done'],
+      ['2026-09-20', 'next'],
+    ]);
+  });
+
   it('rejects invalid payloads without writing', async () => {
     await expect(
       saveEntry(def, '2026-09-09', { title: '' }, undefined, repo),
