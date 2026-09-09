@@ -1,6 +1,6 @@
 # Design Document: Personal Calendar Tracker
 
-Status: **draft for review**. No application code is written until this document is confirmed.
+Status: **implemented**. This is the design as agreed before coding started; the implementation notes at the end record where the build diverged.
 
 ## 1. Goals and constraints
 
@@ -191,3 +191,14 @@ Everything else in the MVP list is in scope.
 - Week starts on Monday.
 - License: MIT.
 - Commit author identity for the portfolio history (see review notes).
+
+## 9. Implementation notes
+
+Written after the build. Differences from the plan above:
+
+- Versions moved with the template defaults: React 19, Vite 8, TypeScript 6, ESLint 10, Tailwind 4, Node 22.
+- The category contract gained three optional hooks: `dueDate` and `isDone` (so the dashboard can list upcoming items generically) and `followUp` (so completing a recurring admin task creates the next occurrence without the admin category reaching into the database).
+- Habits get an inline check-in row in the day panel in addition to the modal form, because ticking a box should not take three clicks.
+- A "Load sample data" action and a footer with a two-step "Clear all data" were added so the demo is usable on first open.
+- The application shell (Tailwind, router, layout) and the form primitives each got their own commit before the calendar work, which was not in the original commit list.
+- CI gained a Docker job that builds the image and checks the container serves the app.
