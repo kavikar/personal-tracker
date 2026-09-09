@@ -3,6 +3,8 @@
 [![CI](https://github.com/kavikar/personal-tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/kavikar/personal-tracker/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
+**[Live demo](https://personal-tracker-weld.vercel.app)** · [Design Doc](docs/DESIGN.md)
+
 A calendar-centric tracker for running several concurrent goals on one date grid: job applications, technical interview prep, immigration and admin tasks, and daily habits. Local-first, no account, runs in the browser.
 
 ![Month view with the day panel open](docs/screenshots/calendar-month.png)
@@ -73,9 +75,19 @@ docker compose up --build
 
 The app is served by nginx on http://localhost:8080. The image is built in two stages (Node for the build, nginx for serving) and is about 50 MB. See [`Dockerfile`](Dockerfile) and [`docker/nginx.conf`](docker/nginx.conf).
 
-### Deploying
+### Deploying to Vercel
 
-The repository is set up for Vercel: import it, keep the detected Vite settings, and deploy. [`vercel.json`](vercel.json) adds the single-page-app rewrite and long-lived caching for hashed assets. Any static host works because the build output is a plain `dist/` folder.
+The repository is pre-configured for Vercel with zero setup:
+
+1. Go to [vercel.com](https://vercel.com) and sign in (or create an account).
+2. Click **Add New → Project**, then **Import Git Repository**.
+3. Select this repository (`kavikar/personal-tracker`).
+4. Vercel will auto-detect Vite as the framework — accept the defaults.
+5. Click **Deploy**.
+
+That's it. Vercel will run the build, serve the app, and re-deploy on every push to `main`. [`vercel.json`](vercel.json) configures the single-page-app rewrite and long-lived caching for hashed assets.
+
+Any static host works since the build output is a plain `dist/` folder; the configuration just tells the host to serve `index.html` for client routes.
 
 ## Architecture
 
