@@ -114,8 +114,11 @@ export async function loadSampleData(
           company: pick(COMPANIES),
           role: pick(ROLES),
           status,
+          // Only recent applications still carry a pending follow-up; older ones have lapsed.
           nextActionDate:
-            status === 'applied' || status === 'screening' ? addDays(date, 7) : undefined,
+            (status === 'applied' || status === 'screening') && offset >= 41 - 10
+              ? addDays(date, 7)
+              : undefined,
         } satisfies JobSearchData,
       });
     }
@@ -155,7 +158,7 @@ export async function loadSampleData(
   for (const [offset, data] of admin)
     entries.push({ date: addDays(today, offset), category: 'admin', data });
 
-  for (const entry of entries) await repository.addEntry(entry);
+  await repository.addEntries(entries);
   return { entries: entries.length, habits: 2 };
 }
 

@@ -10,6 +10,8 @@ import type { CategoryKey } from '../categories/keys';
  */
 export interface Repository {
   addEntry<T>(input: NewEntry<T>): Promise<Entry<T>>;
+  /** Insert many entries in one transaction. All or nothing. */
+  addEntries(inputs: readonly NewEntry[]): Promise<Entry[]>;
   updateEntry<T>(id: string, patch: Partial<Pick<Entry<T>, 'date' | 'data'>>): Promise<Entry<T>>;
   deleteEntry(id: string): Promise<void>;
   getEntry<T = unknown>(id: string): Promise<Entry<T> | undefined>;
@@ -45,6 +47,18 @@ export function createRepository(db: TrackerDatabase): Repository {
       const entry: Entry<T> = { id: newId(), ...input, createdAt: timestamp, updatedAt: timestamp };
       await db.entries.add(entry);
       return entry;
+    },
+
+    async addEntries(inputs) {
+      const timestamp = now();
+      const rows: Entry[] = inputs.map((input) => ({
+        id: newId(),
+        ...input,
+        createdAt: timestamp,
+        updatedAt: timestamp,
+      }));
+      await db.entries.bulkAdd(rows);
+      return rows;
     },
 
     async updateEntry<T>(id: string, patch: Partial<Pick<Entry<T>, 'date' | 'data'>>) {

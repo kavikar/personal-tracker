@@ -21,6 +21,16 @@ describe('entries', () => {
     await expect(repo.getEntry(entry.id)).resolves.toEqual(entry);
   });
 
+  it('adds many entries at once', async () => {
+    const rows = await repo.addEntries([
+      { date: '2026-09-09', category: 'dsa', data: { n: 1 } },
+      { date: '2026-09-10', category: 'habit', data: { n: 2 } },
+    ]);
+    expect(rows).toHaveLength(2);
+    expect(new Set(rows.map((r) => r.id)).size).toBe(2);
+    await expect(repo.listEntries()).resolves.toHaveLength(2);
+  });
+
   it('updates data and bumps updatedAt', async () => {
     const entry = await repo.addEntry({ date: '2026-09-09', category: 'dsa', data: { n: 1 } });
     await new Promise((r) => setTimeout(r, 2));

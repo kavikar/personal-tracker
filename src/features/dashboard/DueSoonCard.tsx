@@ -10,7 +10,11 @@ interface DueSoonCardProps {
   context: CategoryContext;
 }
 
-export function DueSoonCard({ items, context }: DueSoonCardProps) {
+const MAX_ITEMS = 8;
+
+export function DueSoonCard({ items: allItems, context }: DueSoonCardProps) {
+  const items = allItems.slice(0, MAX_ITEMS);
+  const hidden = allItems.length - items.length;
   return (
     <section
       aria-labelledby="due-heading"
@@ -42,6 +46,13 @@ export function DueSoonCard({ items, context }: DueSoonCardProps) {
               </Link>
             </li>
           ))}
+          {hidden > 0 && (
+            <li className="pt-2 text-xs text-slate-500">
+              <Link to="/search" className="hover:underline">
+                {hidden} more on the search page
+              </Link>
+            </li>
+          )}
         </ul>
       )}
     </section>
