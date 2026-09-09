@@ -11,22 +11,22 @@ Status: **draft for review**. No application code is written until this document
 
 ## 2. Tech stack
 
-| Concern | Choice | Why |
-| --- | --- | --- |
-| Language | TypeScript (strict) | Required by the brief. Category schemas become typed contracts instead of loose JSON. |
-| UI | React 19 + Vite | The most widely understood SPA setup. Vite gives fast builds, a trivial Docker image, and zero-config Vercel deploys. |
-| Styling | Tailwind CSS | Utility classes keep component files self-contained and avoid a design-system dependency to learn. |
-| Routing | React Router v6 | Three routes (calendar, dashboard, search). Nothing heavier is needed. |
-| Persistence | Dexie.js over IndexedDB | Real database semantics in the browser (indexes, transactions, versioned migrations) rather than a JSON blob in localStorage. Its repository layer is the seam a future backend replaces. |
-| Validation | Zod | One schema per category drives form validation, runtime checks on stored data, and TypeScript types. Adding a category is adding a schema. |
-| Dates | date-fns | Small, tree-shakeable, pure functions. All dates are stored as local `YYYY-MM-DD` strings to avoid timezone drift in streaks. |
-| Unit tests | Vitest + Testing Library | Vite-native, fast, same config as the build. |
-| E2E tests | Playwright | One smoke test covering add, edit, delete, persistence across reload. |
-| Lint and format | ESLint (flat config) + Prettier | Configured in the first commits so every later commit passes CI. |
-| CI | GitHub Actions | Lint, typecheck, unit tests, build on every push and PR. E2E as a separate job. |
-| Container | Multi-stage Dockerfile (Node build, nginx serve) + docker-compose | Runnable with one command: `docker compose up`. |
-| Deploy | Vercel | Free tier, preview deployment per PR, no build config needed. |
-| Runtime | Node 22 LTS, npm | Matches the current Vite and Vercel defaults. |
+| Concern         | Choice                                                            | Why                                                                                                                                                                                       |
+| --------------- | ----------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Language        | TypeScript (strict)                                               | Required by the brief. Category schemas become typed contracts instead of loose JSON.                                                                                                     |
+| UI              | React 19 + Vite                                                   | The most widely understood SPA setup. Vite gives fast builds, a trivial Docker image, and zero-config Vercel deploys.                                                                     |
+| Styling         | Tailwind CSS                                                      | Utility classes keep component files self-contained and avoid a design-system dependency to learn.                                                                                        |
+| Routing         | React Router v6                                                   | Three routes (calendar, dashboard, search). Nothing heavier is needed.                                                                                                                    |
+| Persistence     | Dexie.js over IndexedDB                                           | Real database semantics in the browser (indexes, transactions, versioned migrations) rather than a JSON blob in localStorage. Its repository layer is the seam a future backend replaces. |
+| Validation      | Zod                                                               | One schema per category drives form validation, runtime checks on stored data, and TypeScript types. Adding a category is adding a schema.                                                |
+| Dates           | date-fns                                                          | Small, tree-shakeable, pure functions. All dates are stored as local `YYYY-MM-DD` strings to avoid timezone drift in streaks.                                                             |
+| Unit tests      | Vitest + Testing Library                                          | Vite-native, fast, same config as the build.                                                                                                                                              |
+| E2E tests       | Playwright                                                        | One smoke test covering add, edit, delete, persistence across reload.                                                                                                                     |
+| Lint and format | ESLint (flat config) + Prettier                                   | Configured in the first commits so every later commit passes CI.                                                                                                                          |
+| CI              | GitHub Actions                                                    | Lint, typecheck, unit tests, build on every push and PR. E2E as a separate job.                                                                                                           |
+| Container       | Multi-stage Dockerfile (Node build, nginx serve) + docker-compose | Runnable with one command: `docker compose up`.                                                                                                                                           |
+| Deploy          | Vercel                                                            | Free tier, preview deployment per PR, no build config needed.                                                                                                                             |
+| Runtime         | Node 22 LTS, npm                                                  | Matches the current Vite and Vercel defaults.                                                                                                                                             |
 
 Why not a backend now: every MVP feature is single-user and single-device. A FastAPI + Postgres service would double the surface area without changing what a reviewer sees in the UI. The data layer is written as a repository interface so a REST or sync backend can be dropped in later, and the README says so explicitly.
 
@@ -42,12 +42,12 @@ Every logged item, regardless of category, is one row.
 
 ```ts
 interface Entry<TData = unknown> {
-  id: string;            // uuid v4
-  date: string;          // local calendar day, "YYYY-MM-DD", indexed
+  id: string; // uuid v4
+  date: string; // local calendar day, "YYYY-MM-DD", indexed
   category: CategoryKey; // "jobSearch" | "dsa" | "admin" | "habit", indexed
-  data: TData;           // category-specific payload, validated by that category's Zod schema
-  createdAt: string;     // ISO timestamp
-  updatedAt: string;     // ISO timestamp
+  data: TData; // category-specific payload, validated by that category's Zod schema
+  createdAt: string; // ISO timestamp
+  updatedAt: string; // ISO timestamp
 }
 ```
 
@@ -62,10 +62,10 @@ Habits need a definition that outlives any single day, so they get their own tab
 ```ts
 interface Habit {
   id: string;
-  name: string;               // "Exercise", "Read 20 pages"
-  kind: "boolean" | "numeric";
-  unit?: string;              // "pages", "minutes" (numeric only)
-  dailyTarget?: number;       // numeric only; a day counts toward the streak when value >= target
+  name: string; // "Exercise", "Read 20 pages"
+  kind: 'boolean' | 'numeric';
+  unit?: string; // "pages", "minutes" (numeric only)
+  dailyTarget?: number; // numeric only; a day counts toward the streak when value >= target
   archived: boolean;
   createdAt: string;
 }
@@ -75,12 +75,12 @@ interface Habit {
 
 Each category owns one Zod schema. Fields marked `?` are optional.
 
-| Category | Payload |
-| --- | --- |
-| Job Search | `company`, `role`, `status` (applied, screening, interview, offer, rejected, withdrawn), `link?`, `nextActionDate?`, `notes?` |
-| DSA / Study | `title`, `link?`, `topics: string[]` (tags such as "two-pointers"), `difficulty` (easy, medium, hard), `minutesSpent`, `solved: boolean` |
-| Immigration / Admin | `title`, `dueDate?`, `completed: boolean`, `recurrence?: { every: number; unit: "day" \| "week" \| "month" }`, `notes?` |
-| Habit | `habitId`, `value: boolean \| number` |
+| Category            | Payload                                                                                                                                  |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| Job Search          | `company`, `role`, `status` (applied, screening, interview, offer, rejected, withdrawn), `link?`, `nextActionDate?`, `notes?`            |
+| DSA / Study         | `title`, `link?`, `topics: string[]` (tags such as "two-pointers"), `difficulty` (easy, medium, hard), `minutesSpent`, `solved: boolean` |
+| Immigration / Admin | `title`, `dueDate?`, `completed: boolean`, `recurrence?: { every: number; unit: "day" \| "week" \| "month" }`, `notes?`                  |
+| Habit               | `habitId`, `value: boolean \| number`                                                                                                    |
 
 Recurrence model for admin tasks: completing a task that has a recurrence creates the next occurrence with the due date advanced by the interval. There is no calendar rule engine. This is small enough to build, easy to explain, and covers "IELTS speaking practice every 2 days".
 
@@ -90,11 +90,11 @@ Recurrence model for admin tasks: completing a task that has a recurrence create
 interface CategoryDefinition<T> {
   key: CategoryKey;
   label: string;
-  color: string;                                   // Tailwind token for calendar dots and badges
+  color: string; // Tailwind token for calendar dots and badges
   schema: z.ZodType<T>;
-  Form: React.ComponentType<FormProps<T>>;         // quick-entry and edit form
+  Form: React.ComponentType<FormProps<T>>; // quick-entry and edit form
   summarize(entries: Entry<T>[], range: DateRange): SummaryCard; // dashboard rollup
-  describe(entry: Entry<T>): string;               // one-line label in day panel and search
+  describe(entry: Entry<T>): string; // one-line label in day panel and search
 }
 ```
 
@@ -168,14 +168,14 @@ Each commit is a working state that passes lint and tests once CI exists.
 
 ## 6. Scope review: what is trimmed and why
 
-| Brief item | Decision |
-| --- | --- |
-| Recurring admin tasks | Kept, but as "create next occurrence on completion", not a recurrence rule engine. |
-| Search | Category + date range + case-insensitive text match on title, company, role, notes. No full-text index. |
-| Follow-ups due | Modelled with `nextActionDate` and surfaced on the dashboard as "due this week". No notifications (stretch). |
-| Screenshots | Generated with Playwright against seeded data so the README has them from day one. Replace with real ones later. |
-| Integration tests | One Playwright smoke test. Deeper coverage stays at the unit level on the pure functions where the logic lives. |
-| Edit forms | The same form component serves add and edit, so there is one form per category, not two. |
+| Brief item            | Decision                                                                                                         |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| Recurring admin tasks | Kept, but as "create next occurrence on completion", not a recurrence rule engine.                               |
+| Search                | Category + date range + case-insensitive text match on title, company, role, notes. No full-text index.          |
+| Follow-ups due        | Modelled with `nextActionDate` and surfaced on the dashboard as "due this week". No notifications (stretch).     |
+| Screenshots           | Generated with Playwright against seeded data so the README has them from day one. Replace with real ones later. |
+| Integration tests     | One Playwright smoke test. Deeper coverage stays at the unit level on the pure functions where the logic lives.  |
+| Edit forms            | The same form component serves add and edit, so there is one form per category, not two.                         |
 
 Everything else in the MVP list is in scope.
 
