@@ -1,8 +1,9 @@
 import { useCategoryContext } from '../../categories/useCategoryContext';
-import { useEntriesByDate, useEntriesInRange } from '../../db/hooks';
+import { useAllEntries, useEntriesByDate, useEntriesInRange } from '../../db/hooks';
 import { addMonths, addWeeks, monthGrid, todayKey, weekRange } from '../../lib/dates';
 import { CalendarHeader } from './CalendarHeader';
 import { DayPanel } from './DayPanel';
+import { EmptyState } from './EmptyState';
 import { MonthView } from './MonthView';
 import { useCalendarState } from './useCalendarState';
 import { WeekView } from './WeekView';
@@ -20,6 +21,8 @@ export function CalendarPage() {
       : weekRange(calendar.focus);
   const entries = useEntriesInRange(range) ?? [];
   const selectedEntries = useEntriesByDate(calendar.selected ?? '') ?? [];
+  const all = useAllEntries();
+  const isEmpty = all !== undefined && all.length === 0 && context.habits.length === 0;
 
   const step = (direction: 1 | -1) =>
     calendar.setFocus(
@@ -38,6 +41,7 @@ export function CalendarPage() {
         onNext={() => step(1)}
         onToday={() => calendar.setFocus(todayKey())}
       />
+      {isEmpty && !calendar.selected && <EmptyState />}
       <div
         className={`grid gap-4 ${calendar.selected ? 'lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]' : ''}`}
       >

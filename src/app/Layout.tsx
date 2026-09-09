@@ -1,4 +1,5 @@
 import { NavLink, Outlet } from 'react-router-dom';
+import { DataControls } from './DataControls';
 
 const links = [
   { to: '/', label: 'Calendar', end: true },
@@ -37,6 +38,7 @@ export function Layout() {
       <main className="mx-auto w-full max-w-6xl flex-1 px-4 py-6">
         <Outlet />
       </main>
+      <DataControls />
     </div>
   );
 }
