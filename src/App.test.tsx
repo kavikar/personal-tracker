@@ -20,7 +20,7 @@ describe('application shell', () => {
 
   it('routes to the dashboard and search pages', () => {
     renderAt('/dashboard');
-    expect(screen.getByRole('heading', { level: 1, name: 'Dashboard' })).toBeInTheDocument();
+    expect(screen.getByRole('region', { name: 'Dashboard' })).toBeInTheDocument();
     renderAt('/search');
     expect(screen.getByRole('heading', { level: 1, name: 'Search' })).toBeInTheDocument();
   });
