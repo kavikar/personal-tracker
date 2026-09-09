@@ -14,7 +14,7 @@ Status: **draft for review**. No application code is written until this document
 | Concern | Choice | Why |
 | --- | --- | --- |
 | Language | TypeScript (strict) | Required by the brief. Category schemas become typed contracts instead of loose JSON. |
-| UI | React 18 + Vite | The most widely understood SPA setup. Vite gives fast builds, a trivial Docker image, and zero-config Vercel deploys. |
+| UI | React 19 + Vite | The most widely understood SPA setup. Vite gives fast builds, a trivial Docker image, and zero-config Vercel deploys. |
 | Styling | Tailwind CSS | Utility classes keep component files self-contained and avoid a design-system dependency to learn. |
 | Routing | React Router v6 | Three routes (calendar, dashboard, search). Nothing heavier is needed. |
 | Persistence | Dexie.js over IndexedDB | Real database semantics in the browser (indexes, transactions, versioned migrations) rather than a JSON blob in localStorage. Its repository layer is the seam a future backend replaces. |
