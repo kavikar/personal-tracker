@@ -33,15 +33,17 @@ export function DayCell({
       aria-label={label}
       aria-pressed={isSelected}
       onClick={() => onSelect(date)}
-      className={`flex min-h-20 flex-col items-start gap-1 rounded-md border p-1.5 text-left transition-colors focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:outline-none ${
+      className={`flex min-h-20 flex-col items-start gap-1 rounded-md border p-1.5 text-left transition-colors focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:outline-none dark:focus-visible:ring-slate-600 ${
         isSelected
-          ? 'border-slate-900 bg-white'
-          : 'border-slate-200 bg-white hover:border-slate-400'
+          ? 'border-slate-900 bg-white dark:border-white dark:bg-slate-900'
+          : 'border-slate-200 bg-white hover:border-slate-400 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-600'
       } ${isOutsideMonth ? 'opacity-40' : ''}`}
     >
       <span
         className={`flex size-6 items-center justify-center rounded-full text-sm ${
-          isToday ? 'bg-slate-900 font-semibold text-white' : 'text-slate-700'
+          isToday
+            ? 'bg-slate-900 font-semibold text-white dark:bg-white dark:text-slate-900'
+            : 'text-slate-700 dark:text-slate-300'
         }`}
       >
         {dayNumber}
@@ -51,7 +53,7 @@ export function DayCell({
           {counts.map(([category, count]) => (
             <li
               key={category}
-              className="flex items-center gap-1 text-xs text-slate-600"
+              className="flex items-center gap-1 text-xs text-slate-600 dark:text-slate-400"
               title={getCategory(category)?.label ?? category}
             >
               <CategoryDot category={category} />

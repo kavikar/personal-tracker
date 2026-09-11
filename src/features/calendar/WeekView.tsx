@@ -39,8 +39,10 @@ export function WeekView({
           <div
             key={date}
             role="gridcell"
-            className={`flex min-h-32 flex-col rounded-md border bg-white ${
-              isSelected ? 'border-slate-900' : 'border-slate-200'
+            className={`flex min-h-32 flex-col rounded-md border bg-white dark:bg-slate-900 ${
+              isSelected
+                ? 'border-slate-900 dark:border-white'
+                : 'border-slate-200 dark:border-slate-800'
             }`}
           >
             <button
@@ -48,14 +50,16 @@ export function WeekView({
               aria-pressed={isSelected}
               aria-label={`${formatLong(date)}, ${dayEntries.length} ${dayEntries.length === 1 ? 'entry' : 'entries'}`}
               onClick={() => onSelect(date)}
-              className="flex items-center justify-between gap-2 rounded-t-md border-b border-slate-100 px-2 py-1.5 text-left hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:outline-none"
+              className="flex items-center justify-between gap-2 rounded-t-md border-b border-slate-100 px-2 py-1.5 text-left hover:bg-slate-50 focus-visible:ring-2 focus-visible:ring-slate-400 focus-visible:outline-none dark:border-slate-800 dark:hover:bg-slate-800 dark:focus-visible:ring-slate-600"
             >
-              <span className="text-xs font-medium tracking-wide text-slate-500 uppercase">
+              <span className="text-xs font-medium tracking-wide text-slate-500 uppercase dark:text-slate-400">
                 {formatDateKey(date, 'EEE')}
               </span>
               <span
                 className={`flex size-6 items-center justify-center rounded-full text-sm ${
-                  isToday ? 'bg-slate-900 font-semibold text-white' : 'text-slate-700'
+                  isToday
+                    ? 'bg-slate-900 font-semibold text-white dark:bg-white dark:text-slate-900'
+                    : 'text-slate-700 dark:text-slate-300'
                 }`}
               >
                 {Number(date.slice(8, 10))}
@@ -63,7 +67,10 @@ export function WeekView({
             </button>
             <ul className="flex flex-1 flex-col gap-1 p-1.5">
               {dayEntries.map((entry) => (
-                <li key={entry.id} className="flex items-start gap-1.5 text-xs text-slate-700">
+                <li
+                  key={entry.id}
+                  className="flex items-start gap-1.5 text-xs text-slate-700 dark:text-slate-300"
+                >
                   <CategoryDot category={entry.category} className="mt-1" />
                   <span className="line-clamp-2">{describeEntry(entry, context)}</span>
                 </li>

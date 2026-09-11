@@ -9,7 +9,7 @@ export const jobSearchCategory: CategoryDefinition<JobSearchData> = {
   description: 'Applications, interviews, and follow-ups.',
   color: {
     dot: 'bg-sky-500',
-    badge: 'bg-sky-100 text-sky-800',
+    badge: 'bg-sky-100 text-sky-800 dark:bg-sky-950/60 dark:text-sky-300',
     accent: 'border-sky-500',
   },
   schema: jobSearchSchema,

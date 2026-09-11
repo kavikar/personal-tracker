@@ -51,20 +51,30 @@ export function HabitCheckIn({ date, habits, entries }: HabitCheckInProps) {
   return (
     <section
       aria-label="Habits"
-      className="rounded-md border border-emerald-200 bg-emerald-50/60 p-3"
+      className="rounded-md border border-emerald-200 bg-emerald-50/60 p-3 dark:border-emerald-900 dark:bg-emerald-950/30"
     >
-      <h3 className="text-xs font-semibold tracking-wide text-emerald-800 uppercase">Habits</h3>
+      <h3 className="text-xs font-semibold tracking-wide text-emerald-800 uppercase dark:text-emerald-400">
+        Habits
+      </h3>
       <ul className="mt-2 space-y-2">
         {rows.map((habit) => {
           const entry = byHabit.get(habit.id);
           const met = entry ? meetsTarget(habit, entry.data.value) : false;
           return (
             <li key={habit.id} className="flex items-center justify-between gap-3 text-sm">
-              <span className={met ? 'text-slate-900' : 'text-slate-600'}>
+              <span
+                className={
+                  met ? 'text-slate-900 dark:text-slate-100' : 'text-slate-600 dark:text-slate-400'
+                }
+              >
                 {habit.name}
-                {habit.archived && <span className="ml-1 text-xs text-slate-400">(archived)</span>}
+                {habit.archived && (
+                  <span className="ml-1 text-xs text-slate-400 dark:text-slate-500">
+                    (archived)
+                  </span>
+                )}
                 {habit.kind === 'numeric' && habit.dailyTarget !== undefined && (
-                  <span className="ml-1 text-xs text-slate-400">
+                  <span className="ml-1 text-xs text-slate-400 dark:text-slate-500">
                     target {habit.dailyTarget}
                     {habit.unit ? ` ${habit.unit}` : ''}
                   </span>
@@ -135,7 +145,9 @@ function NumericInput({
           }
         }}
       />
-      {habit.unit && <span className="text-xs text-slate-500">{habit.unit}</span>}
+      {habit.unit && (
+        <span className="text-xs text-slate-500 dark:text-slate-400">{habit.unit}</span>
+      )}
     </div>
   );
 }

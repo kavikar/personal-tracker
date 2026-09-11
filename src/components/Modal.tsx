@@ -20,7 +20,7 @@ export function Modal({ title, onClose, children }: ModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-40 flex items-end justify-center bg-slate-900/40 p-4 sm:items-center"
+      className="fixed inset-0 z-40 flex items-end justify-center bg-slate-900/40 p-4 sm:items-center dark:bg-black/60"
       onClick={onClose}
     >
       <div
@@ -28,7 +28,7 @@ export function Modal({ title, onClose, children }: ModalProps) {
         aria-modal="true"
         aria-labelledby={titleId}
         onClick={(event) => event.stopPropagation()}
-        className="w-full max-w-lg rounded-lg bg-white p-5 shadow-xl"
+        className="w-full max-w-lg rounded-lg bg-white p-5 shadow-xl dark:bg-slate-900 dark:ring-1 dark:ring-slate-800"
       >
         <div className="mb-4 flex items-start justify-between gap-4">
           <h2 id={titleId} className="text-lg font-semibold">

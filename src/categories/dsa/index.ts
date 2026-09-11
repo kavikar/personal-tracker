@@ -9,7 +9,7 @@ export const dsaCategory: CategoryDefinition<DsaData> = {
   description: 'Problems solved, topics, and time spent.',
   color: {
     dot: 'bg-violet-500',
-    badge: 'bg-violet-100 text-violet-800',
+    badge: 'bg-violet-100 text-violet-800 dark:bg-violet-950/60 dark:text-violet-300',
     accent: 'border-violet-500',
   },
   schema: dsaSchema,

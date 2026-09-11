@@ -27,6 +27,9 @@ It is also a deliberate portfolio piece. I work in QA and test automation and am
 - **Search.** Free text, category chips, and a date range, all kept in the URL.
 - **Local-first.** Data lives in IndexedDB in your browser. It survives reloads and works offline. Nothing is sent anywhere.
 - **Sample data.** One click loads six weeks of believable history so the dashboard is not empty on a fresh install.
+- **Dark mode.** Toggle in the header, persisted per browser, defaulting to your OS preference.
+- **Responsive nav.** The header collapses into a hamburger menu on small screens.
+- **Installable (PWA).** Add it to your phone or desktop home screen and it works fully offline, same as the browser tab.
 
 ## Screenshots
 

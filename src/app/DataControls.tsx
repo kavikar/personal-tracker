@@ -32,11 +32,11 @@ export function DataControls() {
   };
 
   return (
-    <footer className="border-t border-slate-200 bg-white">
-      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 text-xs text-slate-500">
+    <footer className="border-t border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 text-xs text-slate-500 dark:text-slate-400">
         <p>
           Data is stored in this browser only (IndexedDB). Nothing leaves your device.{' '}
-          <span className="text-slate-400">· v{__APP_VERSION__}</span>
+          <span className="text-slate-400 dark:text-slate-500">· v{__APP_VERSION__}</span>
         </p>
         <div className="flex items-center gap-2">
           {isEmpty && (
@@ -51,7 +51,7 @@ export function DataControls() {
           )}
           {confirming && (
             <>
-              <span className="text-red-700">Delete every entry and habit?</span>
+              <span className="text-red-700 dark:text-red-400">Delete every entry and habit?</span>
               <Button
                 size="sm"
                 variant="danger"

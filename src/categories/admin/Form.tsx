@@ -110,7 +110,7 @@ export function AdminForm({ date, initial, onSubmit, onCancel }: FormProps<Admin
           />
         )}
       </Field>
-      <label className="flex items-center gap-2 text-sm text-slate-700">
+      <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
         <Checkbox
           checked={form.values.completed}
           onChange={(e) => form.setValue('completed', e.target.checked)}
