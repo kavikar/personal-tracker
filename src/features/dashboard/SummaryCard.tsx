@@ -26,9 +26,7 @@ export function SummaryCard({ definition, stats }: SummaryCardProps) {
           {stats.map((stat) => (
             <div key={stat.label}>
               <dt className="text-xs text-slate-500 dark:text-slate-400">{stat.label}</dt>
-              <dd className="text-xl font-semibold text-slate-900 dark:text-white">
-                {stat.value}
-              </dd>
+              <dd className="text-xl font-semibold text-slate-900 dark:text-white">{stat.value}</dd>
               {stat.hint && (
                 <dd className="text-xs text-slate-500 dark:text-slate-400">{stat.hint}</dd>
               )}
