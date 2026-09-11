@@ -34,7 +34,10 @@ export function DataControls() {
   return (
     <footer className="border-t border-slate-200 bg-white">
       <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-4 py-3 text-xs text-slate-500">
-        <p>Data is stored in this browser only (IndexedDB). Nothing leaves your device.</p>
+        <p>
+          Data is stored in this browser only (IndexedDB). Nothing leaves your device.{' '}
+          <span className="text-slate-400">· v{__APP_VERSION__}</span>
+        </p>
         <div className="flex items-center gap-2">
           {isEmpty && (
             <Button size="sm" onClick={seed} disabled={busy}>
