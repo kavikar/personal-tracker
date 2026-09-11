@@ -46,7 +46,7 @@ export function SearchPage() {
       <form
         role="search"
         onSubmit={(event) => event.preventDefault()}
-        className="space-y-3 rounded-lg border border-slate-200 bg-white p-4 shadow-xs"
+        className="space-y-3 rounded-lg border border-slate-200 bg-white p-4 shadow-xs dark:border-slate-800 dark:bg-slate-900"
       >
         <Field label="Text">
           {(ids) => (
@@ -60,7 +60,9 @@ export function SearchPage() {
           )}
         </Field>
         <fieldset>
-          <legend className="text-sm font-medium text-slate-700">Categories</legend>
+          <legend className="text-sm font-medium text-slate-700 dark:text-slate-300">
+            Categories
+          </legend>
           <div className="mt-1 flex flex-wrap gap-2">
             {categories.map((definition) => {
               const active = filters.categories.includes(definition.key);
@@ -72,8 +74,8 @@ export function SearchPage() {
                   onClick={() => toggleCategory(definition.key)}
                   className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm transition-colors ${
                     active
-                      ? 'border-slate-900 bg-slate-900 text-white'
-                      : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100'
+                      ? 'border-slate-900 bg-slate-900 text-white dark:border-white dark:bg-white dark:text-slate-900'
+                      : 'border-slate-300 bg-white text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300 dark:hover:bg-slate-800'
                   }`}
                 >
                   <CategoryDot category={definition.key} />
@@ -110,7 +112,7 @@ export function SearchPage() {
         </div>
       </form>
 
-      <p role="status" className="text-sm text-slate-600">
+      <p role="status" className="text-sm text-slate-600 dark:text-slate-400">
         {all === undefined
           ? 'Loading…'
           : `${results.length} ${results.length === 1 ? 'entry' : 'entries'}${

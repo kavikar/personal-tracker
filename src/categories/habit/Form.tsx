@@ -89,8 +89,10 @@ export function HabitForm({ initial, onSubmit, onCancel }: FormProps<HabitEntryD
           )}
         </Field>
       ) : (
-        <fieldset className="space-y-3 rounded-md border border-slate-200 p-3">
-          <legend className="px-1 text-sm font-medium text-slate-700">New habit</legend>
+        <fieldset className="space-y-3 rounded-md border border-slate-200 p-3 dark:border-slate-800">
+          <legend className="px-1 text-sm font-medium text-slate-700 dark:text-slate-300">
+            New habit
+          </legend>
           <Field label="Name" error={errors.name}>
             {(ids) => (
               <TextInput
@@ -151,7 +153,7 @@ export function HabitForm({ initial, onSubmit, onCancel }: FormProps<HabitEntryD
       )}
 
       {kind === 'boolean' ? (
-        <label className="flex items-center gap-2 text-sm text-slate-700">
+        <label className="flex items-center gap-2 text-sm text-slate-700 dark:text-slate-300">
           <Checkbox checked={value === true} onChange={(e) => setValue(e.target.checked)} />
           Done
         </label>

@@ -23,13 +23,13 @@ export function EntryRow({ entry, context, onEdit, showDate = false }: EntryRowP
 
   return (
     <li
-      className={`flex items-center justify-between gap-3 rounded-md border-l-4 bg-white py-2 pr-2 pl-3 shadow-xs ${
-        def?.color.accent ?? 'border-slate-300'
+      className={`flex items-center justify-between gap-3 rounded-md border-l-4 bg-white py-2 pr-2 pl-3 shadow-xs dark:bg-slate-900 ${
+        def?.color.accent ?? 'border-slate-300 dark:border-slate-700'
       }`}
     >
       <div className="min-w-0 flex-1">
-        <p className="truncate text-sm text-slate-800">{description}</p>
-        <p className="mt-0.5 flex items-center gap-2 text-xs text-slate-500">
+        <p className="truncate text-sm text-slate-800 dark:text-slate-200">{description}</p>
+        <p className="mt-0.5 flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
           {showDate && <span>{formatShort(entry.date)}</span>}
           <CategoryBadge category={entry.category} />
         </p>

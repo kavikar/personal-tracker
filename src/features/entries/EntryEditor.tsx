@@ -36,7 +36,7 @@ export function EntryEditor({ definition, date, entry, onClose }: EntryEditorPro
       {errors.length > 0 && (
         <ul
           role="alert"
-          className="mb-3 list-disc rounded-md bg-red-50 py-2 pr-3 pl-6 text-sm text-red-700"
+          className="mb-3 list-disc rounded-md bg-red-50 py-2 pr-3 pl-6 text-sm text-red-700 dark:bg-red-950/40 dark:text-red-400"
         >
           {errors.map((message) => (
             <li key={message}>{message}</li>

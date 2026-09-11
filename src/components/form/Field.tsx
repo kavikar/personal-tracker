@@ -16,12 +16,15 @@ export function Field({ label, error, hint, children, className = '' }: FieldPro
   const message = error ?? hint;
   return (
     <div className={`flex flex-col gap-1 ${className}`}>
-      <label htmlFor={id} className="text-sm font-medium text-slate-700">
+      <label htmlFor={id} className="text-sm font-medium text-slate-700 dark:text-slate-300">
         {label}
       </label>
       {children({ id, describedBy: message ? messageId : undefined, invalid: Boolean(error) })}
       {message && (
-        <p id={messageId} className={`text-xs ${error ? 'text-red-600' : 'text-slate-500'}`}>
+        <p
+          id={messageId}
+          className={`text-xs ${error ? 'text-red-600 dark:text-red-400' : 'text-slate-500 dark:text-slate-400'}`}
+        >
           {message}
         </p>
       )}

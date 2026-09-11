@@ -34,7 +34,7 @@ export function DayPanel({ date, entries, context, onClose }: DayPanelProps) {
   return (
     <aside
       aria-label={`Entries for ${formatLong(date)}`}
-      className="rounded-lg border border-slate-200 bg-slate-100/60 p-4"
+      className="rounded-lg border border-slate-200 bg-slate-100/60 p-4 dark:border-slate-800 dark:bg-slate-900/60"
     >
       <div className="flex items-start justify-between gap-2">
         <h2 className="text-lg font-semibold">{formatLong(date)}</h2>
@@ -62,7 +62,7 @@ export function DayPanel({ date, entries, context, onClose }: DayPanelProps) {
       </div>
 
       {listed.length === 0 ? (
-        <p className="mt-4 text-sm text-slate-500">Nothing logged yet.</p>
+        <p className="mt-4 text-sm text-slate-500 dark:text-slate-400">Nothing logged yet.</p>
       ) : (
         <ul className="mt-4 space-y-2">
           {listed.map((entry) => (

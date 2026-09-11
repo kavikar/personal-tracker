@@ -11,7 +11,7 @@ export const adminCategory: CategoryDefinition<AdminData> = {
   description: 'Immigration paperwork and other one-off or recurring tasks.',
   color: {
     dot: 'bg-amber-500',
-    badge: 'bg-amber-100 text-amber-800',
+    badge: 'bg-amber-100 text-amber-800 dark:bg-amber-950/60 dark:text-amber-300',
     accent: 'border-amber-500',
   },
   schema: adminSchema,

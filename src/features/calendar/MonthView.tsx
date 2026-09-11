@@ -29,7 +29,7 @@ export function MonthView({
         <div
           key={day}
           role="columnheader"
-          className="px-1 pb-1 text-center text-xs font-medium tracking-wide text-slate-500 uppercase"
+          className="px-1 pb-1 text-center text-xs font-medium tracking-wide text-slate-500 uppercase dark:text-slate-400"
         >
           {day}
         </div>

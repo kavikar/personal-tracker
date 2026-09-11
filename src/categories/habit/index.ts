@@ -9,7 +9,7 @@ export const habitCategory: CategoryDefinition<HabitEntryData> = {
   description: 'Daily yes/no or numeric habits with streaks.',
   color: {
     dot: 'bg-emerald-500',
-    badge: 'bg-emerald-100 text-emerald-800',
+    badge: 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300',
     accent: 'border-emerald-500',
   },
   schema: habitEntrySchema,
