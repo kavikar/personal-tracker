@@ -5,11 +5,13 @@ import {
   eachDayOfInterval,
   endOfMonth,
   endOfWeek,
+  endOfYear,
   format,
   isValid,
   parse,
   startOfMonth,
   startOfWeek,
+  startOfYear,
 } from 'date-fns';
 import type { DateKey, DateRange } from '../db/types';
 
@@ -78,6 +80,11 @@ export function weekRange(key: DateKey): DateRange {
     from: toDateKey(startOfWeek(date, { weekStartsOn: WEEK_STARTS_ON })),
     to: toDateKey(endOfWeek(date, { weekStartsOn: WEEK_STARTS_ON })),
   };
+}
+
+export function yearRange(key: DateKey): DateRange {
+  const date = parseDateKey(key);
+  return { from: toDateKey(startOfYear(date)), to: toDateKey(endOfYear(date)) };
 }
 
 /** Every day key in an inclusive range, in order. */
