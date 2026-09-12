@@ -11,6 +11,7 @@ describe('loadSampleData', () => {
     const entries = await repo.listEntries();
     expect(entries).toHaveLength(summary.entries);
     expect(await repo.listHabits()).toHaveLength(summary.habits);
+    expect(await repo.listGoals()).toHaveLength(summary.goals);
 
     for (const def of categories) {
       const own = entries.filter((entry) => entry.category === def.key);

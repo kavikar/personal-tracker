@@ -74,6 +74,7 @@ export function DashboardPage() {
           <SummaryCard
             key={definition.key}
             definition={definition}
+            range={state.range}
             stats={definition.summarize(
               inRange.filter((entry) => entry.category === definition.key),
               summaryContext,

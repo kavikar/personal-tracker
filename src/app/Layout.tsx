@@ -6,6 +6,7 @@ import { DataControls } from './DataControls';
 const links = [
   { to: '/', label: 'Calendar', end: true },
   { to: '/dashboard', label: 'Dashboard' },
+  { to: '/goals', label: 'Goals' },
   { to: '/search', label: 'Search' },
 ];
 

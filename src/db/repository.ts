@@ -1,6 +1,6 @@
 import type { TrackerDatabase } from './database';
 import { db as defaultDb } from './database';
-import type { DateKey, DateRange, Entry, Habit, NewEntry, NewHabit } from './types';
+import type { DateKey, DateRange, Entry, Goal, Habit, NewEntry, NewGoal, NewHabit } from './types';
 import type { CategoryKey } from '../categories/keys';
 
 /**
@@ -22,6 +22,11 @@ export interface Repository {
   addHabit(input: NewHabit): Promise<Habit>;
   updateHabit(id: string, patch: Partial<Omit<Habit, 'id' | 'createdAt'>>): Promise<Habit>;
   listHabits(includeArchived?: boolean): Promise<Habit[]>;
+
+  addGoal(input: NewGoal): Promise<Goal>;
+  updateGoal(id: string, patch: Partial<Omit<Goal, 'id' | 'createdAt'>>): Promise<Goal>;
+  deleteGoal(id: string): Promise<void>;
+  listGoals(): Promise<Goal[]>;
 
   clearAll(): Promise<void>;
 }
@@ -118,10 +123,34 @@ export function createRepository(db: TrackerDatabase): Repository {
         .sort((a, b) => a.createdAt.localeCompare(b.createdAt));
     },
 
+    async addGoal(input) {
+      const goal: Goal = { id: newId(), createdAt: now(), ...input };
+      await db.goals.add(goal);
+      return goal;
+    },
+
+    async updateGoal(id, patch) {
+      const existing = await db.goals.get(id);
+      if (!existing) throw new NotFoundError('Goal', id);
+      const updated: Goal = { ...existing, ...patch };
+      await db.goals.put(updated);
+      return updated;
+    },
+
+    async deleteGoal(id) {
+      await db.goals.delete(id);
+    },
+
+    async listGoals() {
+      const rows = await db.goals.toArray();
+      return rows.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
+    },
+
     async clearAll() {
-      await db.transaction('rw', db.entries, db.habits, async () => {
+      await db.transaction('rw', db.entries, db.habits, db.goals, async () => {
         await db.entries.clear();
         await db.habits.clear();
+        await db.goals.clear();
       });
     },
   };

@@ -95,12 +95,58 @@ describe('habits', () => {
   });
 });
 
+describe('goals', () => {
+  it('adds, updates, and lists goals in creation order', async () => {
+    const a = await repo.addGoal({
+      label: 'Apply to jobs',
+      category: 'jobSearch',
+      target: 10,
+      period: 'month',
+    });
+    await new Promise((r) => setTimeout(r, 2));
+    const b = await repo.addGoal({
+      label: 'Read more',
+      category: 'habit',
+      habitId: 'habit-1',
+      target: 100,
+      period: 'year',
+    });
+
+    expect((await repo.listGoals()).map((g) => g.id)).toEqual([a.id, b.id]);
+
+    const updated = await repo.updateGoal(a.id, { target: 20 });
+    expect(updated.target).toBe(20);
+  });
+
+  it('throws NotFoundError when updating a missing goal', async () => {
+    await expect(repo.updateGoal('missing', { target: 1 })).rejects.toBeInstanceOf(NotFoundError);
+  });
+
+  it('deletes a goal', async () => {
+    const goal = await repo.addGoal({
+      label: 'Solve problems',
+      category: 'dsa',
+      target: 50,
+      period: 'year',
+    });
+    await repo.deleteGoal(goal.id);
+    await expect(repo.listGoals()).resolves.toEqual([]);
+  });
+});
+
 describe('clearAll', () => {
   it('removes every row', async () => {
     await repo.addEntry({ date: '2026-09-09', category: 'dsa', data: {} });
     await repo.addHabit({ name: 'Exercise', kind: 'boolean' });
+    await repo.addGoal({
+      label: 'Apply to jobs',
+      category: 'jobSearch',
+      target: 10,
+      period: 'month',
+    });
     await repo.clearAll();
     await expect(repo.listEntries()).resolves.toEqual([]);
     await expect(repo.listHabits(true)).resolves.toEqual([]);
+    await expect(repo.listGoals()).resolves.toEqual([]);
   });
 });

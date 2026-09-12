@@ -44,5 +44,24 @@ export interface DateRange {
   to: DateKey;
 }
 
+export type GoalPeriod = 'week' | 'month' | 'year';
+
+/**
+ * A user-defined target, for example "Read 10 pages" (habit, weekly) or
+ * "50 problems" (dsa, yearly). Progress is computed on the fly from entries
+ * in the current period; nothing about progress is stored.
+ */
+export interface Goal {
+  id: string;
+  label: string;
+  category: CategoryKey;
+  /** Required when category is 'habit': which habit this goal tracks. */
+  habitId?: string;
+  target: number;
+  period: GoalPeriod;
+  createdAt: Timestamp;
+}
+
 export type NewEntry<TData = unknown> = Pick<Entry<TData>, 'date' | 'category' | 'data'>;
 export type NewHabit = Pick<Habit, 'name' | 'kind' | 'unit' | 'dailyTarget'>;
+export type NewGoal = Pick<Goal, 'label' | 'category' | 'habitId' | 'target' | 'period'>;

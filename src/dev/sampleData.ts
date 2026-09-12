@@ -50,6 +50,7 @@ const PROBLEMS: Array<[string, DsaData['difficulty'], string[]]> = [
 export interface SampleDataSummary {
   entries: number;
   habits: number;
+  goals: number;
 }
 
 /**
@@ -159,7 +160,36 @@ export async function loadSampleData(
     entries.push({ date: addDays(today, offset), category: 'admin', data });
 
   await repository.addEntries(entries);
-  return { entries: entries.length, habits: 2 };
+
+  // A mix of habit-, dsa-, and jobSearch-backed goals, so the Goals page shows every kind.
+  await repository.addGoal({
+    label: 'Read 100 pages',
+    category: 'habit',
+    habitId: reading.id,
+    target: 100,
+    period: 'month',
+  });
+  await repository.addGoal({
+    label: 'Exercise 20 days',
+    category: 'habit',
+    habitId: exercise.id,
+    target: 20,
+    period: 'month',
+  });
+  await repository.addGoal({
+    label: 'Solve 50 problems',
+    category: 'dsa',
+    target: 50,
+    period: 'year',
+  });
+  await repository.addGoal({
+    label: 'Apply to 15 jobs',
+    category: 'jobSearch',
+    target: 15,
+    period: 'month',
+  });
+
+  return { entries: entries.length, habits: 2, goals: 4 };
 }
 
 function habit(
