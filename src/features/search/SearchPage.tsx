@@ -2,18 +2,63 @@ import { useState } from 'react';
 import { describeEntry } from '../../categories/describe';
 import { categories, getCategory } from '../../categories/registry';
 import { useCategoryContext } from '../../categories/useCategoryContext';
-import type { AnyCategoryDefinition } from '../../categories/types';
+import type { AnyCategoryDefinition, CategoryContext } from '../../categories/types';
 import { Button } from '../../components/Button';
 import { CategoryDot } from '../../components/CategoryDot';
 import { Field, TextInput } from '../../components/form';
 import { useAllEntries } from '../../db/hooks';
 import type { Entry } from '../../db/types';
+import { formatRelativeDay } from '../../lib/dates';
 import { EntryEditor } from '../entries/EntryEditor';
 import { EntryRow } from '../entries/EntryRow';
 import { filterEntries, isEmptyFilters } from './filterEntries';
+import { groupEntriesByDate } from './groupEntriesByDate';
 import { useSearchFilters } from './useSearchFilters';
 
 const MAX_RESULTS = 200;
+const PAGE_SIZE = 30;
+
+interface ResultsListProps {
+  results: Entry[];
+  context: CategoryContext;
+  onEdit: (entry: Entry) => void;
+}
+
+/**
+ * Renders results grouped under date headings, revealing more a page at a
+ * time instead of dumping everything at once. Give this a `key` derived from
+ * the active filters so switching filters starts pagination over.
+ */
+function ResultsList({ results, context, onEdit }: ResultsListProps) {
+  const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
+  const visible = results.slice(0, visibleCount);
+  const groups = groupEntriesByDate(visible);
+  const remaining = results.length - visible.length;
+
+  return (
+    <div className="space-y-4">
+      {groups.map((group) => (
+        <div key={group.date}>
+          <h2 className="text-xs font-semibold tracking-wide text-slate-500 uppercase dark:text-slate-400">
+            {formatRelativeDay(group.date)}
+          </h2>
+          <ul className="mt-1.5 space-y-2">
+            {group.entries.map((entry) => (
+              <EntryRow key={entry.id} entry={entry} context={context} onEdit={onEdit} />
+            ))}
+          </ul>
+        </div>
+      ))}
+      {remaining > 0 && (
+        <div className="flex justify-center">
+          <Button onClick={() => setVisibleCount((count) => count + PAGE_SIZE)}>
+            Load {Math.min(remaining, PAGE_SIZE)} more
+          </Button>
+        </div>
+      )}
+    </div>
+  );
+}
 
 export function SearchPage() {
   const [filters, update, clear] = useSearchFilters();
@@ -26,6 +71,7 @@ export function SearchPage() {
 
   const results = all ? filterEntries(all, filters, (entry) => describeEntry(entry, context)) : [];
   const shown = results.slice(0, MAX_RESULTS);
+  const filtersKey = `${filters.query}|${filters.categories.join(',')}|${filters.from}|${filters.to}`;
 
   const toggleCategory = (key: AnyCategoryDefinition['key']) =>
     update({
@@ -121,11 +167,7 @@ export function SearchPage() {
       </p>
 
       {shown.length > 0 && (
-        <ul className="space-y-2">
-          {shown.map((entry) => (
-            <EntryRow key={entry.id} entry={entry} context={context} onEdit={openEdit} showDate />
-          ))}
-        </ul>
+        <ResultsList key={filtersKey} results={shown} context={context} onEdit={openEdit} />
       )}
 
       {editing && (

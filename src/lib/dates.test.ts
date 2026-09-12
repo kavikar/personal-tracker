@@ -7,6 +7,7 @@ import {
   eachDayInRange,
   formatLong,
   formatMonth,
+  formatRelativeDay,
   isInRange,
   isSameMonth,
   isValidDateKey,
@@ -130,5 +131,11 @@ describe('formatting', () => {
   it('formats human-readable labels', () => {
     expect(formatLong('2026-09-09')).toBe('Wed 9 Sep 2026');
     expect(formatMonth('2026-09-09')).toBe('September 2026');
+  });
+
+  it('formats relative days against a given today', () => {
+    expect(formatRelativeDay('2026-09-09', '2026-09-09')).toBe('Today');
+    expect(formatRelativeDay('2026-09-08', '2026-09-09')).toBe('Yesterday');
+    expect(formatRelativeDay('2026-09-07', '2026-09-09')).toBe('Mon 7 Sep 2026');
   });
 });
