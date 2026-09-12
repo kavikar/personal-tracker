@@ -35,7 +35,8 @@ describe('DayPanel', () => {
     render(<Harness />);
     expect(screen.getByText('Nothing logged yet.')).toBeInTheDocument();
 
-    await user.click(screen.getByRole('button', { name: 'Add Note' }));
+    await user.click(screen.getByRole('button', { name: 'Add entry' }));
+    await user.click(screen.getByRole('menuitem', { name: 'Add Note' }));
     expect(screen.getByRole('dialog', { name: /Add Note/ })).toBeInTheDocument();
     await user.type(screen.getByLabelText('Text'), 'Two Sum');
     await user.click(screen.getByRole('button', { name: 'Save' }));
@@ -49,7 +50,8 @@ describe('DayPanel', () => {
   it('shows validation errors and keeps the dialog open', async () => {
     const user = userEvent.setup();
     render(<Harness />);
-    await user.click(screen.getByRole('button', { name: 'Add Note' }));
+    await user.click(screen.getByRole('button', { name: 'Add entry' }));
+    await user.click(screen.getByRole('menuitem', { name: 'Add Note' }));
     await user.click(screen.getByRole('button', { name: 'Save' }));
     expect(await screen.findByRole('alert')).toHaveTextContent('text: Text is required');
     expect(screen.getByRole('dialog')).toBeInTheDocument();

@@ -18,7 +18,8 @@ test('logs an entry, keeps it across reloads, edits it, and deletes it', async (
   const today = await todayKey(page);
   await page.goto(`/?date=${today}&selected=${today}`);
 
-  await page.getByRole('button', { name: 'Add Job Search' }).click();
+  await page.getByRole('button', { name: 'Add entry' }).click();
+  await page.getByRole('menuitem', { name: 'Add Job Search' }).click();
   const dialog = page.getByRole('dialog');
   await dialog.getByLabel('Company').fill('Northwind');
   await dialog.getByLabel('Role').fill('Platform Engineer');
@@ -45,7 +46,8 @@ test('logs an entry, keeps it across reloads, edits it, and deletes it', async (
 test('validates required fields before saving', async ({ page }) => {
   const today = await todayKey(page);
   await page.goto(`/?date=${today}&selected=${today}`);
-  await page.getByRole('button', { name: 'Add DSA' }).click();
+  await page.getByRole('button', { name: 'Add entry' }).click();
+  await page.getByRole('menuitem', { name: 'Add DSA' }).click();
   await page.getByRole('dialog').getByRole('button', { name: 'Save' }).click();
   await expect(page.getByText('Problem title is required')).toBeVisible();
   await expect(page.getByRole('dialog')).toBeVisible();
@@ -55,7 +57,8 @@ test('habit check-in feeds the dashboard streak', async ({ page }) => {
   const today = await todayKey(page);
   await page.goto(`/?date=${today}&selected=${today}`);
 
-  await page.getByRole('button', { name: 'Add Habit' }).click();
+  await page.getByRole('button', { name: 'Add entry' }).click();
+  await page.getByRole('menuitem', { name: 'Add Habit' }).click();
   await page.getByRole('dialog').getByLabel('Name').fill('Exercise');
   await page.getByRole('dialog').getByRole('button', { name: 'Save' }).click();
   await expect(page.getByRole('region', { name: 'Habits' }).getByLabel('Exercise')).toBeChecked();

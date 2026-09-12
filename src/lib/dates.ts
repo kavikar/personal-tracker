@@ -131,3 +131,10 @@ export function formatShort(key: DateKey): string {
 export function formatDateKey(key: DateKey, pattern: string): string {
   return format(parseDateKey(key), pattern);
 }
+
+/** "Today", "Yesterday", or "Tue 9 Sep 2026" for anything further back. */
+export function formatRelativeDay(key: DateKey, today: DateKey = todayKey()): string {
+  if (key === today) return 'Today';
+  if (key === addDays(today, -1)) return 'Yesterday';
+  return formatLong(key);
+}

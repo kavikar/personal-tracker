@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { categories, getCategory } from '../../categories/registry';
 import type { AnyCategoryDefinition, CategoryContext } from '../../categories/types';
 import { Button } from '../../components/Button';
@@ -23,6 +23,8 @@ interface EditorState {
 
 export function DayPanel({ date, entries, context, onClose }: DayPanelProps) {
   const [editor, setEditor] = useState<EditorState | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const pickerRef = useRef<HTMLDivElement>(null);
 
   const listed = entries.filter((entry) => entry.category !== 'habit');
 
@@ -30,6 +32,24 @@ export function DayPanel({ date, entries, context, onClose }: DayPanelProps) {
     const definition = getCategory(entry.category);
     if (definition) setEditor({ definition, entry });
   };
+
+  useEffect(() => {
+    if (!pickerOpen) return;
+    const onPointerDown = (event: PointerEvent) => {
+      if (pickerRef.current && !pickerRef.current.contains(event.target as Node)) {
+        setPickerOpen(false);
+      }
+    };
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setPickerOpen(false);
+    };
+    document.addEventListener('pointerdown', onPointerDown);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('pointerdown', onPointerDown);
+      document.removeEventListener('keydown', onKey);
+    };
+  }, [pickerOpen]);
 
   return (
     <aside
@@ -43,18 +63,38 @@ export function DayPanel({ date, entries, context, onClose }: DayPanelProps) {
         </Button>
       </div>
 
-      <div className="mt-3 flex flex-wrap gap-2">
-        {categories.map((definition) => (
-          <Button
-            key={definition.key}
-            size="sm"
-            onClick={() => setEditor({ definition })}
-            aria-label={`Add ${definition.label}`}
+      <div ref={pickerRef} className="relative mt-3 inline-block">
+        <Button
+          size="sm"
+          onClick={() => setPickerOpen((open) => !open)}
+          aria-haspopup="menu"
+          aria-expanded={pickerOpen}
+        >
+          <span aria-hidden="true">+</span> Add entry
+        </Button>
+        {pickerOpen && (
+          <div
+            role="menu"
+            className="absolute z-10 mt-1 w-44 overflow-hidden rounded-md border border-slate-200 bg-white py-1 shadow-lg dark:border-slate-700 dark:bg-slate-900"
           >
-            <CategoryDot category={definition.key} />
-            {definition.label}
-          </Button>
-        ))}
+            {categories.map((definition) => (
+              <button
+                key={definition.key}
+                type="button"
+                role="menuitem"
+                onClick={() => {
+                  setEditor({ definition });
+                  setPickerOpen(false);
+                }}
+                aria-label={`Add ${definition.label}`}
+                className="flex w-full items-center gap-2 px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
+              >
+                <CategoryDot category={definition.key} />
+                {definition.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
 
       <div className="mt-4">

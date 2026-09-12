@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Button } from '../../components/Button';
 import { Modal } from '../../components/Modal';
+import { Skeleton } from '../../components/Skeleton';
 import { useAllEntries, useGoals, useHabits } from '../../db/hooks';
 import { repository } from '../../db/repository';
 import type { Goal } from '../../db/types';
@@ -37,7 +38,12 @@ export function GoalsPage() {
         </Button>
       </div>
 
-      {goals === undefined ? null : goals.length === 0 ? (
+      {goals === undefined ? (
+        <div className="grid gap-4 sm:grid-cols-2">
+          <Skeleton className="h-28" />
+          <Skeleton className="h-28" />
+        </div>
+      ) : goals.length === 0 ? (
         <div className="rounded-lg border border-dashed border-slate-300 bg-white p-4 text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-400">
           <p className="font-medium text-slate-800 dark:text-slate-200">No goals yet.</p>
           <p className="mt-1">

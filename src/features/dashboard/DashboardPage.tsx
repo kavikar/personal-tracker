@@ -2,6 +2,7 @@ import { categories } from '../../categories/registry';
 import { useCategoryContext } from '../../categories/useCategoryContext';
 import { Button } from '../../components/Button';
 import { SegmentedControl } from '../../components/SegmentedControl';
+import { Skeleton } from '../../components/Skeleton';
 import { useAllEntries, useEntriesInRange } from '../../db/hooks';
 import { formatDateKey, formatMonth, todayKey } from '../../lib/dates';
 import { DueSoonCard } from './DueSoonCard';
@@ -19,9 +20,12 @@ const PERIOD_OPTIONS = [
 export function DashboardPage() {
   const state = useDashboardState();
   const context = useCategoryContext();
-  const inRange = useEntriesInRange(state.range) ?? [];
-  const all = useAllEntries() ?? [];
+  const inRangeRaw = useEntriesInRange(state.range);
+  const allRaw = useAllEntries();
+  const inRange = inRangeRaw ?? [];
+  const all = allRaw ?? [];
   const today = todayKey();
+  const loading = inRangeRaw === undefined || allRaw === undefined;
 
   const summaryContext = { ...context, range: state.range };
   const title =
@@ -69,24 +73,41 @@ export function DashboardPage() {
         </div>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        {categories.map((definition) => (
-          <SummaryCard
-            key={definition.key}
-            definition={definition}
-            range={state.range}
-            stats={definition.summarize(
-              inRange.filter((entry) => entry.category === definition.key),
-              summaryContext,
-            )}
-          />
-        ))}
-      </div>
+      {loading ? (
+        <>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Skeleton className="h-32" />
+            <Skeleton className="h-32" />
+            <Skeleton className="h-32" />
+            <Skeleton className="h-32" />
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Skeleton className="h-40" />
+            <Skeleton className="h-40" />
+          </div>
+        </>
+      ) : (
+        <>
+          <div className="grid gap-4 md:grid-cols-2">
+            {categories.map((definition) => (
+              <SummaryCard
+                key={definition.key}
+                definition={definition}
+                range={state.range}
+                stats={definition.summarize(
+                  inRange.filter((entry) => entry.category === definition.key),
+                  summaryContext,
+                )}
+              />
+            ))}
+          </div>
 
-      <div className="grid gap-4 md:grid-cols-2">
-        <HabitStreaksCard rows={streaks} />
-        <DueSoonCard items={due} context={context} />
-      </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <HabitStreaksCard rows={streaks} />
+            <DueSoonCard items={due} context={context} />
+          </div>
+        </>
+      )}
     </section>
   );
 }
