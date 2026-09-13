@@ -1,5 +1,5 @@
 import Dexie, { type EntityTable } from 'dexie';
-import type { Entry, Goal, Habit } from './types';
+import type { Entry, Goal, Habit, PillarSkill } from './types';
 
 /**
  * IndexedDB database for the tracker.
@@ -12,6 +12,7 @@ export class TrackerDatabase extends Dexie {
   entries!: EntityTable<Entry, 'id'>;
   habits!: EntityTable<Habit, 'id'>;
   goals!: EntityTable<Goal, 'id'>;
+  pillarSkills!: EntityTable<PillarSkill, 'id'>;
 
   constructor(name = 'personal-tracker') {
     super(name);
@@ -21,6 +22,9 @@ export class TrackerDatabase extends Dexie {
     });
     this.version(2).stores({
       goals: 'id, category, habitId',
+    });
+    this.version(3).stores({
+      pillarSkills: 'id',
     });
   }
 }

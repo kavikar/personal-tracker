@@ -26,6 +26,21 @@ describe('jobSearchSchema', () => {
     expect(parsed).toEqual({ company: 'Acme', role: 'Platform Engineer', status: 'applied' });
   });
 
+  it('drops a blank tier and keeps a set tier', () => {
+    expect(
+      jobSearchSchema.parse({ company: 'Acme', role: 'SDET', status: 'applied', tier: '' }),
+    ).toEqual({ company: 'Acme', role: 'SDET', status: 'applied' });
+    expect(
+      jobSearchSchema.parse({
+        company: 'Acme',
+        role: 'SDET',
+        status: 'applied',
+        tier: '1',
+        passesEvalFramework: true,
+      }),
+    ).toEqual({ company: 'Acme', role: 'SDET', status: 'applied', tier: '1', passesEvalFramework: true });
+  });
+
   it('rejects missing required fields, bad links, and bad dates', () => {
     const result = jobSearchSchema.safeParse({
       company: '',
@@ -50,6 +65,15 @@ describe('jobSearchCategory', () => {
         { today: '2026-09-09', habits: [] },
       ),
     ).toBe('Acme · SDET (Interview)');
+  });
+
+  it('appends the tier when set', () => {
+    expect(
+      jobSearchCategory.describe(
+        { company: 'Acme', role: 'SDET', status: 'interview', tier: '1' },
+        { today: '2026-09-09', habits: [] },
+      ),
+    ).toBe('Acme · SDET (Interview) · Tier 1');
   });
 
   it('treats closed applications as done for due-date purposes', () => {
@@ -87,7 +111,23 @@ describe('summarizeJobSearch', () => {
       { label: 'Applications sent', value: 2 },
       { label: 'Interviews', value: 1 },
       { label: 'Offers', value: 1 },
+      { label: 'Screened (passed framework)', value: 0 },
       { label: 'Follow-ups due', value: 2, hint: '1 overdue' },
     ]);
+  });
+
+  it('counts applications that passed the evaluation framework screen', () => {
+    const ctx = { range: { from: '2026-09-07', to: '2026-09-13' }, today: '2026-09-10', habits: [] };
+    const stats = summarizeJobSearch(
+      [
+        entry('2026-09-07', { status: 'applied', passesEvalFramework: true }),
+        entry('2026-09-08', { status: 'applied', passesEvalFramework: false }),
+      ],
+      ctx,
+    );
+    expect(stats.find((s) => s.label === 'Screened (passed framework)')).toEqual({
+      label: 'Screened (passed framework)',
+      value: 1,
+    });
   });
 });

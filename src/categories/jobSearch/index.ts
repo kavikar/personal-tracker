@@ -1,6 +1,12 @@
 import type { CategoryDefinition } from '../types';
 import { JobSearchForm } from './Form';
-import { ACTIVE_STATUSES, JOB_STATUS_LABELS, jobSearchSchema, type JobSearchData } from './schema';
+import {
+  ACTIVE_STATUSES,
+  JOB_STATUS_LABELS,
+  JOB_TIER_LABELS,
+  jobSearchSchema,
+  type JobSearchData,
+} from './schema';
 import { summarizeJobSearch } from './summarize';
 
 export const jobSearchCategory: CategoryDefinition<JobSearchData> = {
@@ -13,7 +19,10 @@ export const jobSearchCategory: CategoryDefinition<JobSearchData> = {
     accent: 'border-sky-500',
   },
   schema: jobSearchSchema,
-  describe: (data) => `${data.company} · ${data.role} (${JOB_STATUS_LABELS[data.status]})`,
+  describe: (data) => {
+    const base = `${data.company} · ${data.role} (${JOB_STATUS_LABELS[data.status]})`;
+    return data.tier ? `${base} · ${JOB_TIER_LABELS[data.tier]}` : base;
+  },
   summarize: summarizeJobSearch,
   Form: JobSearchForm,
   dueDate: (data) => data.nextActionDate,

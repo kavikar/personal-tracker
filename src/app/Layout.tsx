@@ -7,6 +7,7 @@ const links = [
   { to: '/', label: 'Calendar', end: true },
   { to: '/dashboard', label: 'Dashboard' },
   { to: '/goals', label: 'Goals' },
+  { to: '/plan', label: 'Plan' },
   { to: '/search', label: 'Search' },
 ];
 

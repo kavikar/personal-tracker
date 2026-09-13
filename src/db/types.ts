@@ -65,3 +65,15 @@ export interface Goal {
 export type NewEntry<TData = unknown> = Pick<Entry<TData>, 'date' | 'category' | 'data'>;
 export type NewHabit = Pick<Habit, 'name' | 'kind' | 'unit' | 'dailyTarget'>;
 export type NewGoal = Pick<Goal, 'label' | 'category' | 'habitId' | 'target' | 'period'>;
+
+/**
+ * One checked-off sub-skill on the Plan page's skill-pillar checklists. Not a
+ * calendar entry — pillar skills are one-time mastery items, not dated
+ * events — so they get their own tiny table instead of living in `entries`.
+ * `id` is `${pillarId}__${skillIndex}`.
+ */
+export interface PillarSkill {
+  id: string;
+  checked: boolean;
+  updatedAt: Timestamp;
+}
