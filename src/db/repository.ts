@@ -1,6 +1,16 @@
 import type { TrackerDatabase } from './database';
 import { db as defaultDb } from './database';
-import type { DateKey, DateRange, Entry, Goal, Habit, NewEntry, NewGoal, NewHabit } from './types';
+import type {
+  DateKey,
+  DateRange,
+  Entry,
+  Goal,
+  Habit,
+  NewEntry,
+  NewGoal,
+  NewHabit,
+  PillarSkill,
+} from './types';
 import type { CategoryKey } from '../categories/keys';
 
 /**
@@ -27,6 +37,9 @@ export interface Repository {
   updateGoal(id: string, patch: Partial<Omit<Goal, 'id' | 'createdAt'>>): Promise<Goal>;
   deleteGoal(id: string): Promise<void>;
   listGoals(): Promise<Goal[]>;
+
+  listPillarSkills(): Promise<PillarSkill[]>;
+  setPillarSkillChecked(id: string, checked: boolean): Promise<PillarSkill>;
 
   clearAll(): Promise<void>;
 }
@@ -146,12 +159,30 @@ export function createRepository(db: TrackerDatabase): Repository {
       return rows.sort((a, b) => a.createdAt.localeCompare(b.createdAt));
     },
 
+    async listPillarSkills() {
+      return db.pillarSkills.toArray();
+    },
+
+    async setPillarSkillChecked(id, checked) {
+      const updated: PillarSkill = { id, checked, updatedAt: now() };
+      await db.pillarSkills.put(updated);
+      return updated;
+    },
+
     async clearAll() {
-      await db.transaction('rw', db.entries, db.habits, db.goals, async () => {
-        await db.entries.clear();
-        await db.habits.clear();
-        await db.goals.clear();
-      });
+      await db.transaction(
+        'rw',
+        db.entries,
+        db.habits,
+        db.goals,
+        db.pillarSkills,
+        async () => {
+          await db.entries.clear();
+          await db.habits.clear();
+          await db.goals.clear();
+          await db.pillarSkills.clear();
+        },
+      );
     },
   };
 }

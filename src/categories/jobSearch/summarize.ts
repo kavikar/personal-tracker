@@ -22,6 +22,7 @@ export function summarizeJobSearch(
     { label: 'Applications sent', value: count((d) => d.status === 'applied') },
     { label: 'Interviews', value: count((d) => d.status === 'interview') },
     { label: 'Offers', value: count((d) => d.status === 'offer') },
+    { label: 'Screened (passed framework)', value: count((d) => d.passesEvalFramework === true) },
     {
       label: 'Follow-ups due',
       value: followUpsDue.length,

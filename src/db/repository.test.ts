@@ -134,6 +134,20 @@ describe('goals', () => {
   });
 });
 
+describe('pillar skills', () => {
+  it('sets and lists checked state, and upserts on repeated toggles', async () => {
+    await repo.setPillarSkillChecked('pillar-coding__0', true);
+    expect((await repo.listPillarSkills()).map((s) => [s.id, s.checked])).toEqual([
+      ['pillar-coding__0', true],
+    ]);
+
+    await repo.setPillarSkillChecked('pillar-coding__0', false);
+    const rows = await repo.listPillarSkills();
+    expect(rows).toHaveLength(1);
+    expect(rows[0].checked).toBe(false);
+  });
+});
+
 describe('clearAll', () => {
   it('removes every row', async () => {
     await repo.addEntry({ date: '2026-09-09', category: 'dsa', data: {} });
@@ -144,9 +158,11 @@ describe('clearAll', () => {
       target: 10,
       period: 'month',
     });
+    await repo.setPillarSkillChecked('pillar-coding__0', true);
     await repo.clearAll();
     await expect(repo.listEntries()).resolves.toEqual([]);
     await expect(repo.listHabits(true)).resolves.toEqual([]);
     await expect(repo.listGoals()).resolves.toEqual([]);
+    await expect(repo.listPillarSkills()).resolves.toEqual([]);
   });
 });

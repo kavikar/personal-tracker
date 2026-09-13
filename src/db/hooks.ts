@@ -1,7 +1,7 @@
 import { useLiveQuery } from 'dexie-react-hooks';
 import type { CategoryKey } from '../categories/keys';
 import { repository } from './repository';
-import type { DateKey, DateRange, Entry, Goal, Habit } from './types';
+import type { DateKey, DateRange, Entry, Goal, Habit, PillarSkill } from './types';
 
 /**
  * Live queries re-run automatically whenever the underlying tables change, so
@@ -30,4 +30,8 @@ export function useHabits(includeArchived = false): Habit[] | undefined {
 
 export function useGoals(): Goal[] | undefined {
   return useLiveQuery(() => repository.listGoals(), []);
+}
+
+export function usePillarSkills(): PillarSkill[] | undefined {
+  return useLiveQuery(() => repository.listPillarSkills(), []);
 }

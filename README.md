@@ -24,6 +24,7 @@ It is also a deliberate portfolio piece. I work in QA and test automation and am
   - Admin: one-off or recurring tasks with a due date. Completing a recurring task schedules the next one.
   - Habits: yes/no or numeric with a unit and daily target, with current and longest streaks.
 - **Dashboard.** Weekly or monthly rollups per category, habit streaks, and everything due in the next seven days with overdue items first.
+- **Plan.** Static reference content for a longer-term plan (compensation targets, role tiers, a job-posting evaluation checklist, skill-pillar checklists, positioning/resume rules with copy-to-clipboard framing) plus a one-time import that seeds a weekly schedule, action list, and roadmap as admin tasks and a goal, so the plan lives on the same calendar/dashboard/goals views instead of a separate document.
 - **Search.** Free text, category chips, and a date range, all kept in the URL.
 - **Local-first.** Data lives in IndexedDB in your browser. It survives reloads and works offline. Nothing is sent anywhere.
 - **Sample data.** One click loads six weeks of believable history so the dashboard is not empty on a fresh install.
@@ -101,13 +102,15 @@ Any static host works since the build output is a plain `dist/` folder; the conf
 │  categories/       jobSearch · dsa · admin · habit  + registry  │  one folder per category
 │                    schema (Zod) · Form · describe · summarize   │  the extension point
 ├────────────────────────────────────────────────────────────────┤
+│  features/plan/    static reference content · one-time import   │  the longer-term plan
+├────────────────────────────────────────────────────────────────┤
 │  lib/              dates · streaks                              │  pure, unit-tested logic
 ├────────────────────────────────────────────────────────────────┤
 │  db/               Dexie database · Repository interface · hooks│  the persistence seam
 └────────────────────────────────────────────────────────────────┘
 ```
 
-**Data model.** Two tables. `entries` holds every logged item with a `date` (local `YYYY-MM-DD`), a `category` key, and an opaque `data` payload that the owning category validates with Zod on the way in and out. `habits` holds habit definitions. Because Dexie only indexes `id`, `date`, `category`, and the `[category+date]` pair, adding a category never needs a schema migration.
+**Data model.** Four tables. `entries` holds every logged item with a `date` (local `YYYY-MM-DD`), a `category` key, and an opaque `data` payload that the owning category validates with Zod on the way in and out. `habits` holds habit definitions, `goals` holds user-defined targets, and `pillarSkills` holds the Plan page's one-time skill-mastery checkboxes (not calendar entries, so they get their own table instead of a `date`). Because Dexie only indexes `id`, `date`, `category`, and the `[category+date]` pair, adding a category never needs a schema migration.
 
 **Categories are plugins.** Each one implements the [`CategoryDefinition`](src/categories/types.ts) contract: a schema, a form component, a one-line `describe`, a `summarize` for the dashboard, colour tokens, and optional `dueDate`, `isDone`, and `followUp` hooks. The calendar, day panel, dashboard, and search never special-case a category; they iterate the [registry](src/categories/registry.ts). To add a category:
 

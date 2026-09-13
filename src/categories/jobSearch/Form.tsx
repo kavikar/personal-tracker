@@ -1,4 +1,5 @@
 import {
+  Checkbox,
   Field,
   FormActions,
   Select,
@@ -7,12 +8,21 @@ import {
   useSchemaForm,
 } from '../../components/form';
 import type { FormProps } from '../types';
-import { JOB_STATUS_LABELS, JOB_STATUSES, jobSearchSchema, type JobSearchData } from './schema';
+import {
+  JOB_STATUS_LABELS,
+  JOB_STATUSES,
+  JOB_TIER_LABELS,
+  JOB_TIERS,
+  jobSearchSchema,
+  type JobSearchData,
+} from './schema';
 
 type Values = {
   company: string;
   role: string;
   status: string;
+  tier: string;
+  passesEvalFramework: boolean;
   link: string;
   nextActionDate: string;
   notes: string;
@@ -23,6 +33,8 @@ function toValues(initial?: JobSearchData): Values {
     company: initial?.company ?? '',
     role: initial?.role ?? '',
     status: initial?.status ?? 'applied',
+    tier: initial?.tier ?? '',
+    passesEvalFramework: initial?.passesEvalFramework ?? false,
     link: initial?.link ?? '',
     nextActionDate: initial?.nextActionDate ?? '',
     notes: initial?.notes ?? '',
@@ -85,6 +97,27 @@ export function JobSearchForm({ initial, onSubmit, onCancel }: FormProps<JobSear
             />
           )}
         </Field>
+      </div>
+      <div className="grid gap-3 sm:grid-cols-2">
+        <Field label="Tier" error={form.errors.tier} hint="Your target-role tier for this posting">
+          {(ids) => (
+            <Select {...ids} value={form.values.tier} onChange={(e) => form.setValue('tier', e.target.value)}>
+              <option value="">Not set</option>
+              {JOB_TIERS.map((tier) => (
+                <option key={tier} value={tier}>
+                  {JOB_TIER_LABELS[tier]}
+                </option>
+              ))}
+            </Select>
+          )}
+        </Field>
+        <label className="flex items-center gap-2 self-end pb-2 text-sm text-slate-700 dark:text-slate-300">
+          <Checkbox
+            checked={form.values.passesEvalFramework}
+            onChange={(e) => form.setValue('passesEvalFramework', e.target.checked)}
+          />
+          Passed the evaluation framework screen
+        </label>
       </div>
       <Field label="Link" error={form.errors.link}>
         {(ids) => (
