@@ -4,11 +4,13 @@ import { useAllEntries } from '../db/hooks';
 import { repository } from '../db/repository';
 import { loadSampleData } from '../dev/sampleData';
 import { todayKey } from '../lib/dates';
+import { ImportEntriesModal } from './ImportEntriesModal';
 
-/** Footer actions for the local database: seed a demo, or wipe everything. */
+/** Footer actions for the local database: seed a demo, import real data, or wipe everything. */
 export function DataControls() {
   const entries = useAllEntries();
   const [confirming, setConfirming] = useState(false);
+  const [importing, setImporting] = useState(false);
   const [busy, setBusy] = useState(false);
   const isEmpty = entries !== undefined && entries.length === 0;
 
@@ -44,6 +46,9 @@ export function DataControls() {
               Load sample data
             </Button>
           )}
+          <Button size="sm" variant="ghost" onClick={() => setImporting(true)} disabled={busy}>
+            Import entries
+          </Button>
           {!isEmpty && !confirming && (
             <Button size="sm" variant="danger" onClick={() => setConfirming(true)} disabled={busy}>
               Clear all data
@@ -68,6 +73,9 @@ export function DataControls() {
           )}
         </div>
       </div>
+      {importing && (
+        <ImportEntriesModal onClose={() => setImporting(false)} onImported={() => setImporting(false)} />
+      )}
     </footer>
   );
 }
